@@ -1,0 +1,24 @@
+[gd_scene format=3 uid="uid://dsrters4nheus"]
+
+[ext_resource type="Script" uid="uid://c5irk2dhuuywl" path="res://Scenes/Sheep/Sheep.gd" id="1_d3qlm"]
+[ext_resource type="Script" uid="uid://c7p0urnymmfiw" path="res://Scenes/Sheep/Sprite.gd" id="2_l8prm"]
+
+[node name="Sheep" type="Node2D" unique_id=457419525]
+script = ExtResource("1_d3qlm")
+
+[node name="Sprite" type="Node2D" parent="." unique_id=2035081727]
+script = ExtResource("2_l8prm")
+
+[node name="FaceSprite" type="Sprite2D" parent="Sprite" unique_id=1152600765]
+
+[node name="HairSprite" type="Sprite2D" parent="Sprite" unique_id=1125795231]
+
+[node name="BodySprite" type="Sprite2D" parent="Sprite" unique_id=1194051528]
+
+[node name="LegSprite" type="Sprite2D" parent="Sprite" unique_id=1761053926]
+
+[node name="Mutations" type="Node2D" parent="." unique_id=1271146628]
+
+[node name="AudioStream" type="AudioStreamPlayer2D" parent="." unique_id=1711412572]
+
+[node name="WoolSpawnTimer" type="Timer" parent="." unique_id=1670532312]

@@ -1,0 +1,35 @@
+[gd_scene format=3 uid="uid://1gx78t3s5lgx"]
+
+[ext_resource type="Texture2D" uid="uid://dhwmh6w2qxec7" path="res://Assets/Visual/Miscellaneous/icon.svg" id="1_wtcfe"]
+
+[sub_resource type="GDScript" id="GDScript_4kxuq"]
+script/source = "extends Node2D
+
+var time : float
+var variance : float = Math._random_float(-0.5, 0.5)
+var limit : float = 5.0
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	rotation = 0.0
+	_bob()
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	time += (delta)
+	rotation_degrees = Math._sine(time + variance) / limit
+
+func _bob() -> void:
+	var tween = create_tween()
+	tween.set_ease(Tween.EASE_IN_OUT)
+	tween.set_trans(Tween.TRANS_ELASTIC)
+	tween.set_loops()
+	tween.tween_property(self, \"scale\", Vector2(1.075, 0.925), 2 + variance)
+	tween.tween_property(self, \"scale\", Vector2(0.925, 1.075), 2 + variance)
+"
+
+[node name="Node2D" type="Node2D" unique_id=690123001]
+script = SubResource("GDScript_4kxuq")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1718155066]
+texture = ExtResource("1_wtcfe")
