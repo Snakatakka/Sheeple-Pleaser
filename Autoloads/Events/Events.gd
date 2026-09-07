@@ -2,3 +2,5 @@ extends Node
 
 signal day_changed
 signal time_changed(time)
+
+signal sheep_interacted(sheep)
