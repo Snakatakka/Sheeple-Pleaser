@@ -9,7 +9,6 @@ enum Sex {
 enum LifeStage {
 	CHILD,
 	ADULT,
-	ELDER,
 	DEAD
 }
 
@@ -19,11 +18,13 @@ enum State {
 	DEAD
 }
 
+# Default values for sheep, will change when initiated.
 var sheep_name : String = "Dolly"
 var current_sex : int = Sex.INTERSEX
 var current_life_stage : int = LifeStage.CHILD
 var age : int = 0
 var can_breed : bool = false
+var wool_color : Color = Color.WHITE
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:

@@ -8,6 +8,8 @@ script/source = "extends Node2D
 var time : float
 var variance : float = Math._random_float(-0.5, 0.5)
 var limit : float = 5.0
+var scale_min : float = 0.925
+var scale_max : float = 1.075
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
