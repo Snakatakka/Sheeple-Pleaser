@@ -20,6 +20,10 @@ config/icon="res://Assets/Visual/Miscellaneous/icon.svg"
 Math="*uid://cysqowd86ofjb"
 Events="*uid://8u4phpbpfi31"
 
+[debug]
+
+gdscript/warnings/untyped_declaration=2
+
 [display]
 
 window/stretch/mode="viewport"

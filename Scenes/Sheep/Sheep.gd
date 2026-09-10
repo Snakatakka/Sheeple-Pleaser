@@ -33,7 +33,7 @@ var can_breed : bool = false
 
 # Handles movement.
 const MAX_MOVE_DISTANCE : float = 100.0
-const MIN_MOVE_DISTANCE : float = 20.0
+const SPEED : float = 200.0
 var movement_target : Vector2 = Vector2(0, 0)
 var moving : bool = false
 var can_move : bool = true
@@ -48,16 +48,16 @@ func _process(delta: float) -> void:
 	match current_state:
 		State.WANDER:
 			if (can_move) && (!moving):
-				var delta_x = Math._random_float((position.x - MAX_MOVE_DISTANCE), (position.x + MAX_MOVE_DISTANCE))
-				var delta_y = Math._random_float((position.y - MAX_MOVE_DISTANCE), (position.y + MAX_MOVE_DISTANCE))
-				_move(Vector2(delta_x, delta_y), 250.0)
+				var delta_x : float = Math._random_float((position.x - MAX_MOVE_DISTANCE), (position.x + MAX_MOVE_DISTANCE))
+				var delta_y : float = Math._random_float((position.y - MAX_MOVE_DISTANCE), (position.y + MAX_MOVE_DISTANCE))
+				_move(Vector2(delta_x, delta_y), SPEED)
 			return
 
 func _move(target : Vector2, speed : float) -> void:
-	var tween = create_tween()
+	var tween : Tween = create_tween()
 	moving = true
-	var absolute_x = abs(position.x - abs(target.x))
-	var absolute_y = abs(position.y - abs(target.y))
+	var absolute_x : float = abs(position.x - abs(target.x))
+	var absolute_y : float = abs(position.y - abs(target.y))
 	var speed_value : float = (absolute_x + absolute_y) / speed
 	print(speed_value)
 	tween.tween_property(self, "position", target, speed_value)
@@ -74,7 +74,7 @@ func _age_up() -> void:
 	current_age += 1
 	_evaluate_age(current_age)
 
-func _evaluate_age(age) -> void:
+func _evaluate_age(age : int) -> void:
 	match age:
 		5:
 			_change_life_stage(LifeStage.ADULT)
@@ -87,8 +87,8 @@ func _evaluate_age(age) -> void:
 				_death_roll(age)
 
 # Checks whether or not a sheep dies when it ages up; the older a sheep is, the more likely it is to die.
-func _death_roll(age) -> void:
-	var roll = Math._random_int(29, 40)
+func _death_roll(age : int) -> void:
+	var roll : int = Math._random_int(29, 40)
 	
 	if roll < age:
 		_change_life_stage(LifeStage.DEAD)
