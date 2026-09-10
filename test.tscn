@@ -1,9 +1,83 @@
 [gd_scene format=3 uid="uid://dr0r8wtcjytkg"]
 
+[ext_resource type="Texture2D" uid="uid://dhwmh6w2qxec7" path="res://Assets/Visual/Miscellaneous/icon.svg" id="1_8uh7m"]
 [ext_resource type="PackedScene" uid="uid://dsrters4nheus" path="res://Scenes/Sheep/Sheep.tscn" id="1_37kl0"]
 
+[sub_resource type="GDScript" id="GDScript_8uh7m"]
+script/source = "extends Node2D
+
+var Sheep : PackedScene = preload(\"res://Scenes/Sheep/Sheep.tscn\")
+
+func _on_timer_timeout() -> void:
+	var new_sheep : Node = Sheep.instantiate()
+	add_child(new_sheep)
+"
+
+[sub_resource type="GDScript" id="GDScript_15its"]
+script/source = "extends Camera2D
+
+var focused : bool = false
+var target : Node
+var tween : Tween 
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	Events.sheep_interacted.connect(_focus)
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta: float) -> void:
+	if Input.is_action_just_pressed(\"Unfocus\"):
+		_unfocus()
+		
+	match focused:
+		true:
+			if position != target.position:
+				position = target.position
+		false:
+			position = Vector2(0, 0)
+
+func _focus(sheep : Node) -> void:
+	if target == sheep:
+		_unfocus()
+		return
+	else:
+		target = sheep
+	
+	if tween:
+		tween.kill()
+	
+	tween = create_tween()
+	tween.set_ease(Tween.EASE_IN_OUT)
+	tween.set_trans(Tween.TRANS_BACK)
+	tween.tween_property(self, \"position\", target.position, 0.5)
+	tween.parallel().tween_property(self, \"zoom\", Vector2(2, 2), 0.5)
+	focused = true
+
+func _unfocus() -> void:
+	if tween:
+		tween.kill()
+	
+	tween = create_tween()
+	tween.set_ease(Tween.EASE_IN_OUT)
+	tween.set_trans(Tween.TRANS_BACK)
+	tween.tween_property(self, \"position\", Vector2(0, 0), 0.5)
+	tween.parallel().tween_property(self, \"zoom\", Vector2(1, 1), 0.5)
+	await tween.finished 
+	focused = false
+	target = null
+"
+
 [node name="test" type="Node2D" unique_id=1744826940]
+script = SubResource("GDScript_8uh7m")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1552926214]
+modulate = Color(1, 1, 0.22352941, 0.45882353)
+scale = Vector2(3, 3)
+texture = ExtResource("1_8uh7m")
 
 [node name="Camera2D" type="Camera2D" parent="." unique_id=815979797]
+position_smoothing_enabled = true
+script = SubResource("GDScript_15its")
 
 [node name="Sheep" parent="." unique_id=457419525 instance=ExtResource("1_37kl0")]
