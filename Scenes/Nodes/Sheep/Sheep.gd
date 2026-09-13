@@ -24,7 +24,8 @@ enum State {
 # Determines whether or not the sheep will sleep when it's day time or when it's night time.
 enum SleepTime {
 	DAY,
-	NIGHT
+	NIGHT,
+	NEVER
 }
 
 # Determines how happy the sheep is.
@@ -39,6 +40,15 @@ enum Morale {
 	OVERJOYED,
 }
 
+enum Hunger {
+	STARVING = -2,
+	FAMISHED,
+	HUNGRY,
+	CONTENT,
+	SATISFIED,
+	FULL,
+	OVERSTUFFED
+}
 
 @onready var movement_cooldown : Timer = $MovementCooldown
 @onready var sight_radius : Area2D = $SightRadius
@@ -46,18 +56,19 @@ enum Morale {
 # These are things that WON'T change about the sheep during its lifespan. (Unless changed by a mutation.)
 var sheep_name : String = "Dolly"
 var sex : int = Sex.INTERSEX
-var sleep_time : int = SleepTime.NIGHT
-var able_to_breed : bool = true
-var morale_can_change : bool = true
-var life_stage_can_change : bool = true
 
-# These are things that MIGHT change about the sheep during its lifespan.
+# Handles state.
 var current_state : int = State.WANDER
-var current_life_stage : int = LifeStage.CHILD
-var current_morale : int = Morale.CONTENT
-var current_age : int = 0
-var can_breed : bool = false # can_breed and able_to_breed are DIFFERENT. able_to_breed is permanent, can_breed isn't.
 var search_target_group : String = ""
+
+# Handles life stages.
+var life_stage_can_change : bool = true
+var current_life_stage : int = LifeStage.CHILD
+var current_age : int = 0
+
+# Handles breeding.
+var able_to_breed : bool = true
+var can_breed : bool = false # can_breed and able_to_breed are DIFFERENT. able_to_breed is permanent, can_breed isn't.
 
 # Handles movement.
 const MAX_MOVE_DISTANCE : float = 100.0
@@ -66,9 +77,17 @@ var movement_target : Vector2 = Vector2(0, 0)
 var moving : bool = false
 var can_move : bool = true
 
+# Handles morale.
+var morale_can_change : bool = true
+var current_morale : int = Morale.CONTENT
+
 # Handles hunger.
-var hunger : int = 100
-var hunger_drain_rate : int = 2.5
+var hunger_can_change : bool = true
+var hunger_drain_rate : int = 1
+var current_hunger : int = Hunger.CONTENT
+
+# Handles sleep.
+var sleep_time : int = SleepTime.NIGHT
 
 signal state_changed(state : int)
 
@@ -77,6 +96,7 @@ func _ready() -> void:
 	Events.day_changed.connect(_age_up)
 	Events.time_changed.connect(_morale_check)
 	Events.time_changed.connect(_sleep_check)
+	Events.time_changed.connect(_hunger_check)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
@@ -153,12 +173,17 @@ func _change_age(age : int) -> void:
 			if age > 30:
 				_death_roll(age, current_morale)
 
+func _change_hunger(hunger : int) -> void:
+	current_hunger = hunger
+
 func _change_morale(morale : int) -> void:
 	if morale_can_change:
 		current_morale = morale
 	
 	if morale < Morale.CONTENT:
 		can_breed = false # Makes it so that sheep that are sad can't breed; better incentivizes the player to keep their sheep happy.
+	else:
+		can_breed = true
 
 # Checks whether or not a sheep dies when it ages up; the older a sheep is, the more likely it is to die.
 func _death_roll(age : int, morale_level : int) -> void:
@@ -168,7 +193,12 @@ func _death_roll(age : int, morale_level : int) -> void:
 		_change_life_stage(LifeStage.DEAD)
 
 func _morale_check() -> void:
-	pass
+	var new_morale : int = current_morale + current_hunger
+	_change_morale(new_morale)
+
+func _hunger_check() -> void:
+	var new_hunger : int = current_hunger - hunger_drain_rate
+	_change_hunger(new_hunger)
 
 func _sleep_check(time : int) -> void:
 		if time == sleep_time:
