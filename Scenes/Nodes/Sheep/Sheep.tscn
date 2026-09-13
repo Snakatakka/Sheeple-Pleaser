@@ -1,9 +1,9 @@
 [gd_scene format=3 uid="uid://dsrters4nheus"]
 
-[ext_resource type="Script" uid="uid://c5irk2dhuuywl" path="res://Scenes/Sheep/Sheep.gd" id="1_d3qlm"]
-[ext_resource type="Script" uid="uid://c7p0urnymmfiw" path="res://Scenes/Sheep/Sprite.gd" id="2_l8prm"]
+[ext_resource type="Script" uid="uid://c5irk2dhuuywl" path="res://Scenes/Nodes/Sheep/Sheep.gd" id="1_d3qlm"]
+[ext_resource type="Script" uid="uid://c7p0urnymmfiw" path="res://Scenes/Nodes/Sheep/Sprite.gd" id="2_l8prm"]
 [ext_resource type="Texture2D" uid="uid://dhwmh6w2qxec7" path="res://Assets/Visual/Miscellaneous/icon.svg" id="3_ogxwu"]
-[ext_resource type="Script" uid="uid://ca17p3o4mok37" path="res://Scenes/Sheep/hitbox.gd" id="4_15its"]
+[ext_resource type="Script" uid="uid://ca17p3o4mok37" path="res://Scenes/Nodes/Sheep/hitbox.gd" id="4_15its"]
 
 [node name="Sheep" type="Node2D" unique_id=457419525]
 script = ExtResource("1_d3qlm")
@@ -30,12 +30,12 @@ texture = ExtResource("3_ogxwu")
 [node name="MovementCooldown" type="Timer" parent="." unique_id=1982651739]
 
 [node name="Hitbox" type="Button" parent="." unique_id=1072392513]
-modulate = Color(1, 1, 1, 0)
 offset_left = -64.0
 offset_top = -64.0
 offset_right = 64.0
 offset_bottom = 64.0
 script = ExtResource("4_15its")
 
+[connection signal="state_changed" from="." to="Sprite" method="_on_state_changed"]
 [connection signal="timeout" from="MovementCooldown" to="." method="_on_movement_cooldown_timeout"]
 [connection signal="pressed" from="Hitbox" to="Hitbox" method="_on_pressed"]

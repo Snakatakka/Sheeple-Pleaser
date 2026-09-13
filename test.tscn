@@ -1,16 +1,16 @@
 [gd_scene format=3 uid="uid://dr0r8wtcjytkg"]
 
 [ext_resource type="Texture2D" uid="uid://dhwmh6w2qxec7" path="res://Assets/Visual/Miscellaneous/icon.svg" id="1_8uh7m"]
-[ext_resource type="PackedScene" uid="uid://dsrters4nheus" path="res://Scenes/Sheep/Sheep.tscn" id="1_37kl0"]
+[ext_resource type="PackedScene" uid="uid://dsrters4nheus" path="res://Scenes/Nodes/Sheep/Sheep.tscn" id="1_37kl0"]
+[ext_resource type="PackedScene" uid="uid://ctoctrd5gwnqb" path="res://Scenes/Nodes/ControllerInput/controller_input.tscn" id="3_6uqi0"]
 
 [sub_resource type="GDScript" id="GDScript_8uh7m"]
 script/source = "extends Node2D
 
-var Sheep : PackedScene = preload(\"res://Scenes/Sheep/Sheep.tscn\")
+var Sheep : Node = preload(\"res://Scenes/Nodes/Sheep/Sheep.tscn\").instantiate()
 
-func _on_timer_timeout() -> void:
-	var new_sheep : Node = Sheep.instantiate()
-	add_child(new_sheep)
+func _ready() -> void:
+	add_child(Sheep)
 "
 
 [sub_resource type="GDScript" id="GDScript_15its"]
@@ -81,3 +81,5 @@ position_smoothing_enabled = true
 script = SubResource("GDScript_15its")
 
 [node name="Sheep" parent="." unique_id=457419525 instance=ExtResource("1_37kl0")]
+
+[node name="ControllerInput" parent="." unique_id=1738679562 instance=ExtResource("3_6uqi0")]
